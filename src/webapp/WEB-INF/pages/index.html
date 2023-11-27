@@ -22,8 +22,6 @@
             <td th:utext="${u.surname}"></td>
             <td th:utext="${u.email}"></td>
             <td>
-<!--                <a th:href="@{/{id}/edit(id=${u.getId()})}">Edit</a>-->
-<!--                <a th:href="@{/delete/{id}(id=${u.getId()})}">Delete</a>-->
                 <a th:href="'/update?id='+${u.id}">Edit</a>
                 <a th:href="'/delete?id='+${u.id}">Delete</a>
             </td>

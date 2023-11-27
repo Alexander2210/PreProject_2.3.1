@@ -3,9 +3,12 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import web.model.User;
 import web.service.UserService;
+
+import javax.validation.Valid;
 
 
 @Controller
@@ -24,13 +27,16 @@ public class UserController {
         model.addAttribute("users", userService.getUserTable());
         return "index";
     }
+
     @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user) {
         return "/new";
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute("user") User user) {
+    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return "/new";
         userService.addUser(user);
         return "redirect:/";
     }
@@ -42,13 +48,15 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public String update(@ModelAttribute("user") User user) {
+    public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return "/edit";
         userService.updateUser(user);
         return "redirect:/";
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("id")  long id) {
+    public String delete(@RequestParam("id") long id) {
         userService.deleteUser(id);
         return "redirect:/";
     }
