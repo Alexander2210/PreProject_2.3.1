@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import web.model.User;
 import web.service.UserService;
 
-import java.util.List;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping()
 public class UserController {
 
     private final UserService userService;
@@ -21,12 +19,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public ModelAndView showUsers() {
-        List<User> users = userService.getUserTable();
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("users", users);
-        return mav;
+    @GetMapping()
+    public String showUsers(Model model) {
+        model.addAttribute("users", userService.getUserTable());
+        return "index";
     }
     @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user) {
@@ -39,20 +35,20 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") int id) {
+    @GetMapping("/update")
+    public String editUser(Model model, @RequestParam("id") long id) {
         model.addAttribute("user", userService.findUser(id));
         return "/edit";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/edit")
     public String update(@ModelAttribute("user") User user) {
         userService.updateUser(user);
         return "redirect:/";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id")  long id) {
         userService.deleteUser(id);
         return "redirect:/";
     }
